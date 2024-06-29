@@ -2,13 +2,16 @@
 using System.IO;
 using Xceed.Words.NET;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.WriteLine(Directory.GetCurrentDirectory());
-        string filePath = @"Animus\Animus_Jedno_życie\Animus_Jedno_życie_tekst.docx";
+        string filePath = @"filmy\Animus\Animus_Jedno_życie\Animus_Jedno_życie_tekst.docx";
 
         string tytulPattern = @"TYTUŁ POLSKI LUB : (.*?)TYTUŁ ORYGINALNY";
         string rezyseriaPattern = @"REŻYSER/KA: (.*?)PRODUKCJA";
@@ -55,6 +58,27 @@ class Program
 
             string nagrody = nagrodyMatch.Groups[1].Value.Trim();
             Console.WriteLine(nagrody);
+
+            await CreateWordpressPost();
+        }
+    }
+
+    static async Task CreateWordpressPost(){
+        string url = "https://laffest.pl/wp-json/";
+
+        using(HttpClient client = new HttpClient()){
+            try{
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var jsonResponse = JsonConvert.DeserializeObject(responseBody);
+                Console.Write(jsonResponse);
+            }
+            catch(HttpRequestException e){
+                Console.WriteLine("Request error:" + e.Message);
+            }
         }
     }
 }
