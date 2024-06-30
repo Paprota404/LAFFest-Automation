@@ -43,12 +43,12 @@ class Program
             Console.WriteLine(produkcja);
 
             string czas = czasMatch.Groups[1].Value.Trim();
-            int totalMinutes = int.Parse(czas); // Convert the string to integer
+            int totalMinutes = int.Parse(czas); 
 
-            int hours = totalMinutes / 60; // Get the number of hours
-            int minutes = totalMinutes % 60; // Get the remaining minutes
+            int hours = totalMinutes / 60; 
+            int minutes = totalMinutes % 60; 
 
-            // Construct the output string
+         
             string formattedTime = $"{hours} H {minutes} Min";
 
             Console.WriteLine(formattedTime);
